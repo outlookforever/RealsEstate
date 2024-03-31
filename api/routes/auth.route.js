@@ -1,44 +1,15 @@
 import express from 'express'
+import { login, logout, register, verifyTokens } from '../controllers/auth.controller.js'
+import verifyToken from '../middleware/auth.middleware.js'
 
 const router = express.Router()
 
-router.post('/login', (req, res) => {
-	try {
-		res.status(200).json({
-			message: 'Login Router'
-		})
-	} catch (error) {
-		console.log('🚀 ~ router.post ~ error:', error)
-		res.status(500).json({
-			message: 'Server Error'
-		})
-	}
-})
+router.post('/login', login)
 
-router.post('/register', (req, res) => {
-	try {
-		res.status(200).json({
-			message: 'Register Router'
-		})
-	} catch (error) {
-		console.log('🚀 ~ router.post ~ error:', error)
-		res.status(500).json({
-			message: 'Server Error'
-		})
-	}
-})
+router.post('/register', register)
 
-router.post('/logout', (req, res) => {
-	try {
-		res.status(200).json({
-			message: 'Logout Router'
-		})
-	} catch (error) {
-		console.log('🚀 ~ router.post ~ error:', error)
-		res.status(500).json({
-			message: 'Server Error'
-		})
-	}
-})
+router.post('/logout', logout)
+
+router.get('/validation-token', verifyToken, verifyTokens)
 
 export default router
