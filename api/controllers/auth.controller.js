@@ -70,6 +70,8 @@ export const login = async (req, res) => {
 			expiresIn: process.env.MAX_AGE
 		})
 
+		const { password: userPassword, ...userInfo } = user
+
 		res
 			.cookie('auth_token', token, {
 				httpOnly: true,
@@ -77,7 +79,7 @@ export const login = async (req, res) => {
 				maxAge: parseInt(process.env.MAX_AGE)
 			})
 			.status(200)
-			.json({ message: 'Authorized' })
+			.json({ ...userInfo })
 	} catch (error) {
 		console.log('🚀 ~ login ~ error:', error)
 		res.status(500).json({

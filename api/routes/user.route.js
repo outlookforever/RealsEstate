@@ -1,19 +1,12 @@
 import express from 'express'
+import verifyToken from '../middleware/auth.middleware.js'
+import { deleteUser, getUser, getUsers, updateUser } from '../controllers/user.controller.js'
 
 const router = express.Router()
 
-router.get('/:id', (req, res) => {
-	console.log('user get', req.params.id)
-	res.status(200).json({
-		message: 'well good'
-	})
-})
-
-router.put('/:id', (req, res) => {
-	console.log('user update', req.params.id)
-	res.status(200).json({
-		message: 'well good'
-	})
-})
+router.get('/', getUsers)
+router.get('/:id', verifyToken, getUser)
+router.put('/:id', verifyToken, updateUser)
+router.delete('/:id', verifyToken, deleteUser)
 
 export default router

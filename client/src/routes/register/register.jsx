@@ -1,14 +1,18 @@
 import './register.scss'
 import { Link, useNavigate } from 'react-router-dom'
-import axios from 'axios'
 import { useState } from 'react'
+import apiRequest from '../../lib/apiRequest'
 
 function Register() {
 	const [error, setError] = useState('')
+	const [isLoading, setIsLoading] = useState(false)
+
 	const navigate = useNavigate()
 
 	const handelSubmit = async e => {
 		e.preventDefault()
+		setIsLoading(true)
+		setError('')
 
 		const formData = new FormData(e.target)
 
@@ -17,7 +21,7 @@ function Register() {
 		const password = formData.get('password')
 
 		try {
-			const res = await axios.post('http://localhost:8800/api/auth/register', {
+			await apiRequest.post('/auth/register', {
 				username,
 				email,
 				password
@@ -25,6 +29,8 @@ function Register() {
 			navigate('/login')
 		} catch (err) {
 			setError(err.response.data.message)
+		} finally {
+			setIsLoading(false)
 		}
 	}
 
@@ -34,9 +40,9 @@ function Register() {
 				<form onSubmit={handelSubmit}>
 					<h1>Create an Account</h1>
 					<input name="username" type="text" placeholder="Username" />
-					<input name="email" type="text" placeholder="Email" />
-					<input name="password" type="password" placeholder="Password" />
-					<button>Register</button>
+					<input name="email" required minLength={6} type="text" placeholder="Email" />
+					<input name="password" required minLength={6} type="password" placeholder="Password" />
+					<button disabled={isLoading}>Register</button>
 					{error && <span>{error}</span>}
 					<Link to="/login">Do you have an account?</Link>
 				</form>

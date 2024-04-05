@@ -7,6 +7,8 @@ import postRoutes from './routes/post.route.js'
 import authRoutes from './routes/auth.route.js'
 import userRoutes from './routes/user.route.js'
 
+// import testRoutes from './routes/test.route.js'
+
 const app = express()
 
 app.use(cookieParser())
@@ -22,6 +24,9 @@ app.use(
 app.use('/api/auth', authRoutes)
 app.use('/api/user', userRoutes)
 app.use('/api/posts', postRoutes)
+
+// Routing Lock
+// app.use('/api/test', testRoutes)
 
 app.listen(8800, () => {
 	console.log('Server is running!')
