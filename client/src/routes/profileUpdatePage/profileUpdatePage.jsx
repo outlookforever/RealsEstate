@@ -3,8 +3,10 @@ import './profileUpdatePage.scss'
 import { AuthContext } from '../../context/AuthContext'
 import apiRequest from '../../lib/apiRequest'
 import { useNavigate } from 'react-router-dom'
+import UploadWidget from '../../components/uploadWidget/UploadWidget'
 
 function ProfileUpdatePage() {
+	// TODO: Send Form
 	const { currentUser, updateUser } = useContext(AuthContext)
 	const navigate = useNavigate()
 
@@ -23,13 +25,12 @@ function ProfileUpdatePage() {
 			const res = await apiRequest.put(`/user/${currentUser.id}`, {
 				email,
 				username,
-				password
+				password,
+				avatar
 			})
 
 			updateUser(res.data)
 			navigate('/profile')
-
-			console.log(res.data)
 		} catch (err) {
 			console.log(err)
 			setError(err.response.data.message)
@@ -37,6 +38,9 @@ function ProfileUpdatePage() {
 			setIsLoading(false)
 		}
 	}
+
+	// TODO: Cloudinary
+	const [avatar, setAvatar] = useState(currentUser.avatar)
 
 	return (
 		<div className="profileUpdatePage">
@@ -60,7 +64,17 @@ function ProfileUpdatePage() {
 				</form>
 			</div>
 			<div className="sideContainer">
-				<img src={currentUser.avatar || '/noavatar.jpg'} alt="" className="avatar" />
+				<img src={avatar || '/noavatar.jpg'} alt="" className="avatar" />
+				<UploadWidget
+					uwConfig={{
+						cloudName: 'dzok6xgfd',
+						uploadPreset: 'real-estate',
+						multiple: false,
+						maxImageFileSize: 2000000,
+						folder: 'avatars'
+					}}
+					setAvatar={setAvatar}
+				/>
 			</div>
 		</div>
 	)
