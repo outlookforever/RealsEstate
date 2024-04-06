@@ -1,40 +1,13 @@
 import express from 'express'
+import verifyToken from '../middleware/auth.middleware.js'
+import { getPost, getPosts, addPost, updatePost, deletePost } from '../controllers/post.controller.js'
 
 const router = express.Router()
 
-router.get('/', (req, res) => {
-	console.log('routerPost get all')
-	res.status(200).json({
-		message: 'well good'
-	})
-})
-
-router.get('/:id', (req, res) => {
-	console.log('routerPost getById', req.params.id)
-	res.status(200).json({
-		message: 'well good'
-	})
-})
-
-router.post('/', (req, res) => {
-	console.log('routerPost post')
-	res.status(200).json({
-		message: 'well good'
-	})
-})
-
-router.put('/:id', (req, res) => {
-	console.log('routerPost update', req.params.id)
-	res.status(200).json({
-		message: 'well good'
-	})
-})
-
-router.delete('/:id', (req, res) => {
-	console.log('routerPost delete', req.params.id)
-	res.status(200).json({
-		message: 'well good'
-	})
-})
+router.get('/', getPosts)
+router.get('/:id', getPost)
+router.post('/', verifyToken, addPost)
+router.put('/:id', verifyToken, updatePost)
+router.delete('/:id', verifyToken, deletePost)
 
 export default router
