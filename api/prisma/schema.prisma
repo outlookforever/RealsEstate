@@ -14,20 +14,18 @@ datasource db {
 }
 
 model User {
-  id       String   @id @default(cuid()) @map("_id")
+  id       String   @id @default(cuid())
   email    String   @unique
   username String?
   password String
   avatar   String?
-  createAt DateTime @default(now()) @map("create_at")
-  updateAt DateTime @updatedAt @map("update_at")
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
   posts    Post[]
-
-  @@map("user")
 }
 
 model Post {
-  id        String   @id @default(cuid()) @map("_id")
+  id        String   @id @default(cuid())
   title     String
   images    String[]
   price     Int
@@ -41,17 +39,15 @@ model Post {
   property  Property
 
   user   User   @relation(fields: [userId], references: [id])
-  userId String @map("user_id")
+  userId String
 
-  createAt   DateTime    @default(now()) @map("create_at")
-  updateAt   DateTime    @updatedAt @map("update_at")
+  createAt   DateTime    @default(now())
+  updateAt   DateTime    @updatedAt
   postDetail PostDetail?
-
-  @@map("post")
 }
 
 model PostDetail {
-  id         String  @id @default(cuid()) @map("_id")
+  id         String  @id @default(cuid())
   desc       String
   utilities  String?
   pet        String?
@@ -62,9 +58,7 @@ model PostDetail {
   restaurant Int?
 
   post   Post   @relation(fields: [postId], references: [id])
-  postId String @unique @map("post_id")
-
-  @@map("post_detail")
+  postId String @unique
 }
 
 enum Type {
