@@ -6,7 +6,6 @@ import DOMPurify from 'dompurify'
 
 function SinglePage() {
 	const post = useLoaderData()
-	console.log('🚀 ~ SinglePage ~ post:', post)
 
 	return (
 		<div className="singlePage">
