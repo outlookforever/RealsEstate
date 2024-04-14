@@ -1,8 +1,8 @@
 import prisma from '../lib/prisma.js'
+import jwt from 'jsonwebtoken'
 
 export const getPosts = async (req, res) => {
 	const query = req.query
-	console.log('🚀 ~ getPosts ~ query:', query)
 	try {
 		const posts = await prisma.post.findMany({
 			where: {
@@ -40,7 +40,8 @@ export const getPost = async (req, res) => {
 						username: true,
 						avatar: true
 					}
-				}
+				},
+				savedPost: true
 			}
 		})
 
@@ -49,7 +50,36 @@ export const getPost = async (req, res) => {
 				message: 'Post not found'
 			})
 
-		res.status(200).json(post)
+		const token = req.cookies?.['auth_token']
+
+		if (token) {
+			jwt.verify(token, process.env.JWT_SECRET, async (err, payload) => {
+				if (err) {
+					// Отправляем ответ с ошибкой, если не удалось верифицировать токен
+					return res.status(401).json({ message: 'Unauthorized' })
+				}
+				try {
+					const saved = await prisma.savedPost.findUnique({
+						where: {
+							userId_postId: {
+								postId: id,
+								userId: payload.userId
+							}
+						}
+					})
+					console.log('🚀 ~ post controller ~  saved :', saved ? true : false)
+					// Отправляем ответ только один раз
+					return res.status(200).json({ ...post, isSaved: saved ? true : false })
+				} catch (error) {
+					// Обрабатываем ошибку запроса к базе данных
+					console.error('Database query error:', error)
+					return res.status(500).json({ message: 'Server Error' })
+				}
+			})
+		} else {
+			// Отправляем ответ, если токен не предоставлен
+			res.status(401).json({ message: 'No token provided' })
+		}
 	} catch (error) {
 		console.log('🚀 ~ getPost ~ error:', error)
 		res.status(500).json({
@@ -113,7 +143,7 @@ export const deletePost = async (req, res) => {
 
 		await prisma.post.delete({
 			where: {
-				id
+				id: post.id
 			}
 		})
 
